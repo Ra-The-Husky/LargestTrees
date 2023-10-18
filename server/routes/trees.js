@@ -70,8 +70,16 @@ router.get('/:id', (req, res, next) => {
  *   - Value: success
  */
 router.post('/', (req, res, next) =>{
-  const sql = `INSERT INTO trees (tree, location, height_ft, ground_circumference_ft) VALUES (?, ?, ?, ?)`;
-  const params = [req.params.tree, req.params.location, req.params.height_ft, req.params.ground_circumference_ft]
+  const sql = `
+  INSERT INTO trees
+  (tree, location, height_ft, ground_circumference_ft)
+  VALUES (?, ?, ?, ?)`;
+  const params = [
+    req.body.name,
+    req.body.location,
+    req.body.height,
+    req.body.size
+  ]
 
   db.run(sql, params, (err, rows) => {
     if(err){
@@ -119,7 +127,37 @@ router.delete('/:id', (req, res, next) => {
  *   - Property: message
  *   - Value: success
  */
-// Your code here
+router.put('/:id', (req, res, next) => {
+  if (String(req.body.id) !== req.params.id) {
+    res.status(400).send({
+      "error":"ids do not match"
+    })
+    return
+  }
+  const sql = `
+  UPDATE trees
+  SET
+    tree = ?,
+    location = ?,
+    height_ft = ?,
+    ground_circumference_ft = ?
+  WHERE id = ?`;
+  const params = [
+    req.body.name,
+    req.body.location,
+    req.body.height,
+    req.body.size,
+    req.body.id]
+  db.run(sql, params, (err, rows) => {
+    if (err) {
+      next(err)
+    } else {
+      res.json({
+        "message": "Updated successfully"
+      })
+    }
+  })
+})
 
 // Export class - DO NOT MODIFY
 module.exports = router;
