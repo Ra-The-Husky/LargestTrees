@@ -69,7 +69,20 @@ router.get('/:id', (req, res, next) => {
  *   - Property: message
  *   - Value: success
  */
-router.post()
+router.post('/', (req, res, next) =>{
+  const sql = `INSERT INTO trees (tree, location, height_ft, ground_circumference_ft) VALUES (?, ?, ?, ?)`;
+  const params = [req.params.tree, req.params.location, req.params.height_ft, req.params.ground_circumference_ft]
+
+  db.run(sql, params, (err, rows) => {
+    if(err){
+      next(err)
+    } else {
+      res.json({
+        "message":"success"
+      })
+    }
+  })
+})
 
 /**
  * INTERMEDIATE PHASE 5 - DELETE a tree row from the database
