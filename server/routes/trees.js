@@ -17,10 +17,11 @@ const db = new sqlite3.Database(
 
 // Protocol: GET
 // Path: /
-router.get('/trees', (req, res, next) => {
+
+router.get('/', (req, res, next) => {
 
   console.log('Handling GET request for /trees')
-  const sql = "SELECT * FROM trees";
+  const sql = 'SELECT height_ft, tree, id FROM trees ORDER BY height_ft DESC';
   // Parameters: None
   const params = [];
 
@@ -45,7 +46,18 @@ router.get('/trees', (req, res, next) => {
  * Response: JSON Object
  *   - Properties: id, tree, location, height_ft, ground_circumference_ft
  */
-// Your code here
+router.get('/:id', (req, res, next) => {
+  const sql = `SELECT * FROM trees WHERE id = ?`
+  const params = [req.params.id]
+
+  db.get(sql, params, (err, rows) => {
+    if (err) {
+      next(err)
+    } else {
+      res.json(rows)
+    }
+  })
+})
 
 /**
  * INTERMEDIATE PHASE 4 - INSERT tree row into the database
@@ -57,7 +69,7 @@ router.get('/trees', (req, res, next) => {
  *   - Property: message
  *   - Value: success
  */
-// Your code here
+router.post()
 
 /**
  * INTERMEDIATE PHASE 5 - DELETE a tree row from the database
